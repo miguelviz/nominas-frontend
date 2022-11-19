@@ -11,8 +11,8 @@ const Header = ()=>{
     const {restartPackages,handleShowCreate,searchValue,setSearchValue} = usePayroll();
     const onRestartBtn = ()=>{
         confirm({
-            title:"Precaución!",
-            description: `¿Estas seguro que deseas reiniciar todos los paquetes?`,
+            title:"¡Precaución!",
+            description: `¿Estás seguro que deseas reiniciar todos los paquetes?`,
             confirmationText:"Si",
             cancellationText:"No"
         }).then(()=>{

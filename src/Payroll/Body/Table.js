@@ -8,6 +8,7 @@ import FadeIn from 'react-fade-in';
 import CustomButton from "../../Components/Button";
 import { toast } from "react-hot-toast";
 import { useConfirm } from "material-ui-confirm";
+import {number_format} from "locutus/php/strings";
 const Table = ()=>{
     const {COLORS,pageData,searchValue} = usePayroll();
     const filteredList = ()=>{
@@ -62,20 +63,6 @@ const CustomTr = ({worker,index})=>{
     const {COLORS} = usePayroll();
     const [showMoney,setShowMoney] = React.useState(false);
     const handleShowMoney = ()=>setShowMoney(!showMoney);
-    const getFullSalary = ()=>{
-        if(!isNaN(worker.salary_total)){
-            return `$ ${worker.salary_total.toFixed(2)}`;
-        }else{
-            return `$ 0.00`;
-        }
-    };
-    const getFullISR = ()=>{
-        if(!isNaN(worker.isr_total)){
-            return `$ ${worker.isr_total.toFixed(2)}`;
-        }else{
-            return `$ 0.00`;
-        }
-    };
     return(
         <React.Fragment>
             <tr>
@@ -96,7 +83,7 @@ const CustomTr = ({worker,index})=>{
                 <td align="center">
                     <FadeIn delay={index*100}>
                         <Typography style={{color:COLORS.secondary}}>
-                            {getFullSalary()}
+                            $ {number_format(worker.salary_total,2)}
                         </Typography>
                     </FadeIn>
                 </td>
@@ -145,8 +132,8 @@ const WorkerSalaryDetails = ({worker})=>{
     const onClickBtn = ()=>{
         if(!checkForm()){
             confirm({ 
-                title:"Precaución!",
-                description: `¿Estas seguro que deseas agregar ${quantity} a '${worker.names}'?`,
+                title:"¡Precaución!",
+                description: `¿Estás seguro que deseas agregar ${quantity} a '${worker.names}'?`,
                 confirmationText:"Si",
                 cancellationText:"No"
             }).then(() => {
@@ -170,7 +157,7 @@ const WorkerSalaryDetails = ({worker})=>{
         }
     }
     return(
-        <Grid container style={{paddingLeft:"10%",paddingRight:"10%",backgroundColor:COLORS.background}}>
+        <Grid container style={{paddingLeft:"3%",paddingRight:"3%",backgroundColor:COLORS.background}}>
             <Grid item xs={12} md={3} style={{padding:10}}>
                 <FadeIn>
                     <Card sx={{minWidth:"100%",borderColor:COLORS.primary}}>
@@ -179,32 +166,44 @@ const WorkerSalaryDetails = ({worker})=>{
                                 Desgloce de sueldo
                             </Typography>
                             <Grid container>
-                                <Grid item xs={6}>
+                                <Grid item xs={8}>
                                     <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
                                         Sueldo base:
                                     </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {number_format(worker.salary,2)}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8}>
                                     <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
                                         Bono por horas:
                                     </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {number_format(worker.hour_bonus,2)}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8}>
                                     <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
                                         Bono por entregas:
                                     </Typography>
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {number_format(worker.package_bonus,2)}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={8}>
                                     <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
                                         Total:
                                     </Typography>
                                 </Grid>
-                                <Grid item xs={6}>
+                                <Grid item xs={4}>
                                     <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
-                                        $ {worker.salary.toFixed(2)}
-                                    </Typography>
-                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
-                                        $ {worker.hour_bonus.toFixed(2)}
-                                    </Typography>
-                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
-                                        $ {worker.package_bonus.toFixed(2)}
-                                    </Typography>
-                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
-                                        $ {worker.full_salary.toFixed(2)}
+                                        $ {number_format(worker.full_salary,2)}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -233,7 +232,7 @@ const WorkerSalaryDetails = ({worker})=>{
                                          {worker.isr_porcent}%
                                     </Typography>
                                     <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
-                                        $ {worker.isr_total.toFixed(2)}
+                                        $ {number_format(worker.isr_total,2)}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -262,13 +261,13 @@ const WorkerSalaryDetails = ({worker})=>{
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
-                                        $ {worker.full_salary.toFixed(2)}
+                                        $ {number_format(worker.full_salary,2)}
                                     </Typography>
                                     <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
-                                        $ {worker.isr_total.toFixed(2)}
+                                        $ {number_format(worker.isr_total,2)}
                                     </Typography>
                                     <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
-                                        $ {worker.salary_total.toFixed(2)}
+                                        $ {number_format(worker.salary_total,2)}
                                     </Typography>
                                 </Grid>
                             </Grid>

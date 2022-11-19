@@ -11,12 +11,14 @@ import { Select, MenuItem } from "@mui/material";
 import CustomButton from "../Components/Button";
 import Input from "../Components/Input";
 import { toast } from "react-hot-toast";
+import Footer from "./Footer";
 const Model = ()=>{
     return(
         <div className="payroll-principal">
             <ModalCreate />
             <Header />
             <Body />
+            <Footer />
         </div>
     )
 }
