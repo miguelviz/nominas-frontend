@@ -14,6 +14,10 @@ export const PayrollProvider = (props)=>{
     const handleShowCreate = ()=>setShowCreate(!showCreate);
     const [loadCreate,setLoadCreate] = React.useState(false);
     const handleLoadCreate = (arg)=>setLoadCreate(arg);
+    const [loadPackage,setLoadPackage] = React.useState(false);
+    const handleLoadPackage = (arg)=>setLoadPackage(arg);
+    const [loadRestartPackage,setLoadRestartPackage] = React.useState(false);
+    const handleLoadRestartPackage = (arg)=>setLoadRestartPackage(arg);
     const [searchValue,setSearchValue] = React.useState("");
 
     //Page Functions
@@ -34,23 +38,67 @@ export const PayrollProvider = (props)=>{
         }
     }
     const createWorker = async({names,first_sname,second_sname,userType})=>{
-        let r = await PostRequest({
-            url:"createWorker",
-            postData:{
-                names,
-                first_sname,
-                second_sname,
-                userType
-            },
-            load:handleLoadCreate
-        }).catch(e=>{
-            toast.error(e.error);
+        return new Promise((resolve,reject)=>{
+            (async()=>{
+                let r = await PostRequest({
+                    url:"createWorker",
+                    postData:{
+                        names,
+                        first_sname,
+                        second_sname,
+                        userType
+                    },
+                    load:handleLoadCreate
+                }).catch(e=>{
+                    toast.error(e.error);
+                    setTimeout(()=>reject(),500);
+                })
+                if(r){
+                    await refreshPageData();
+                    handleShowCreate();
+                    resolve();
+                }
+            })()
         })
-        if(r){
-            toast.success("Usuario creado exitosamente");
-            handleShowCreate();
-            await refreshPageData()
-        }
+    }
+    const addPackages = async({userID,packages})=>{
+        return new Promise((resolve,reject)=>{
+            (async()=>{
+                let r = await PostRequest({
+                    url:"addPackages",
+                    postData:{
+                        userID,
+                        packages
+                    },
+                    load:handleLoadPackage
+                }).catch(e=>{
+                    toast.error(e.error);
+                    setTimeout(()=>reject(),500);
+                })
+                if(r){
+                    await refreshPageData();
+                    resolve();
+                }
+            })()
+        })
+    }
+    const restartPackages = async()=>{
+        return new Promise((resolve,reject)=>{
+            (async()=>{
+                let r = await PostRequest({
+                    url:"restartPackages",
+                    postData:{},
+                    load:handleLoadRestartPackage
+                }).catch(e=>{
+                    toast.error(e.error);
+                    setTimeout(()=>reject(),500);
+                })
+                if(r){
+                    await refreshPageData();
+                    resolve();
+                }
+            })()
+        })
     }
     React.useEffect(()=>{
         if(!pageData){
@@ -63,12 +111,12 @@ export const PayrollProvider = (props)=>{
             pageError,
             pageLoad,
             showCreate,handleShowCreate,
-            loadCreate,
+            loadCreate,loadPackage,loadRestartPackage,
             searchValue,setSearchValue,
             COLORS,
-            createWorker
+            createWorker,addPackages,restartPackages
         })
-    },[pageData,pageError,pageLoad,showCreate,searchValue,loadCreate])
+    },[pageData,pageError,pageLoad,showCreate,searchValue,loadCreate,loadPackage,loadRestartPackage])
     return <Payroll.Provider value={value} {...props}/>
 }
 export const usePayroll = ()=> React.useContext(Payroll);

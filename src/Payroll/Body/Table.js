@@ -1,12 +1,23 @@
 import React from "react";
 import { usePayroll } from "../store";
-import { Icon, IconButton, Typography } from '@mui/material';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import { Card, CardContent, Grid, Typography } from '@mui/material';
+import Input from "../../Components/Input";
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import FadeIn from 'react-fade-in';
+import CustomButton from "../../Components/Button";
+import { toast } from "react-hot-toast";
+import { useConfirm } from "material-ui-confirm";
 const Table = ()=>{
-    const {COLORS,pageData} = usePayroll();
+    const {COLORS,pageData,searchValue} = usePayroll();
     const filteredList = ()=>{
         if(pageData&&pageData.list){
-            return pageData.list;
+            let search = searchValue.toLowerCase();
+            if(search){
+                return pageData.list.filter(user=>`${user.names} ${user.first_sname} ${user.second_sname}`.toLowerCase().indexOf(search)!==-1);
+            }else{
+                return pageData.list;
+            }
         }
         return null;
     }
@@ -15,16 +26,19 @@ const Table = ()=>{
             <thead>
                 <tr className="custom-tr" style={{backgroundColor:COLORS.primary}}>
                     <th className="custom-th" style={{color:"#fff",padding:10}} align="center">
-                        Nombre(s)
+                        Nombre completo
                     </th>
                     <th className="custom-th" style={{color:"#fff",padding:10}} align="center">
-                        Apellido Paterno
+                        Tipo de usuario
                     </th>
                     <th className="custom-th" style={{color:"#fff",padding:10}} align="center">
-                        Apellido Materno
+                        Sueldo mensual
                     </th>
                     <th className="custom-th" style={{color:"#fff",padding:10}} align="center">
-                        Opciones
+                        Paquetes entregados
+                    </th>
+                    <th className="custom-th" style={{color:"#fff",padding:10}} align="center">
+                        Detalle
                     </th>
                 </tr>
             </thead>
@@ -32,54 +46,272 @@ const Table = ()=>{
                 {
                     !filteredList() ?
                     <tr>
-                        <td colSpan={4} align="center">
+                        <td colSpan={5} align="center">
                             Sin resultados.
                         </td>
                     </tr> :
                     filteredList().map((worker,indexWorker)=>(
-                        <CustomTr worker={worker} key={indexWorker} />
+                        <CustomTr worker={worker} key={indexWorker} index={indexWorker} />
                     ))
                 }
             </tbody>
         </table>
     )
 }
-const CustomTr = ({worker})=>{
+const CustomTr = ({worker,index})=>{
+    const {COLORS} = usePayroll();
     const [showMoney,setShowMoney] = React.useState(false);
     const handleShowMoney = ()=>setShowMoney(!showMoney);
+    const getFullSalary = ()=>{
+        if(!isNaN(worker.salary_total)){
+            return `$ ${worker.salary_total.toFixed(2)}`;
+        }else{
+            return `$ 0.00`;
+        }
+    };
+    const getFullISR = ()=>{
+        if(!isNaN(worker.isr_total)){
+            return `$ ${worker.isr_total.toFixed(2)}`;
+        }else{
+            return `$ 0.00`;
+        }
+    };
     return(
         <React.Fragment>
             <tr>
                 <td align="center">
-                    <Typography>
-                        {worker.names}
-                    </Typography>
+                    <FadeIn delay={index*100}>
+                        <Typography style={{color:COLORS.secondary}}>
+                            {worker.names} {worker.first_sname} {worker.second_sname}
+                        </Typography>
+                    </FadeIn>
                 </td>
                 <td align="center">
-                    <Typography>
-                        {worker.first_sname}
-                    </Typography>
+                    <FadeIn delay={index*100}>
+                        <Typography style={{color:COLORS.secondary}}>
+                            {worker.name_user_type}
+                        </Typography>
+                    </FadeIn>
                 </td>
                 <td align="center">
-                    <Typography>
-                        {worker.second_sname}
-                    </Typography>
+                    <FadeIn delay={index*100}>
+                        <Typography style={{color:COLORS.secondary}}>
+                            {getFullSalary()}
+                        </Typography>
+                    </FadeIn>
                 </td>
                 <td align="center">
-                    <IconButton onClick={handleShowMoney}>
-                        <AttachMoneyIcon />
-                    </IconButton>
+                    <FadeIn delay={index*100}>
+                        <Typography style={{color:COLORS.secondary}}>
+                            {worker.month_packages}
+                        </Typography>
+                    </FadeIn>
+                </td>
+                <td onClick={handleShowMoney} style={{cursor:"pointer"}} align="center">
+                    {
+                        !showMoney ? <ArrowCircleDownIcon style={{color:COLORS.primary,fontSize:50}} /> : <ArrowCircleUpIcon style={{color:COLORS.secondary,fontSize:50}} />
+                    }
                 </td>
             </tr>
             {
                 showMoney ? 
                 <tr>
-                    <td colSpan={4} align="center">
-                        Show Money
+                    <td colSpan={5} align="center">
+                        <WorkerSalaryDetails worker={worker} />
                     </td>
                 </tr> : null
             }
         </React.Fragment>
+    )
+}
+const WorkerSalaryDetails = ({worker})=>{
+    const confirm = useConfirm();
+    const {COLORS,loadPackage,addPackages} = usePayroll();
+    const [quantity,setQuantity] = React.useState("");
+    const checkQuantity = ()=>{
+        if(quantity){
+            if(!isNaN(quantity)){
+                return false;
+            }
+        }
+        return true;
+    }
+    const checkForm = ()=>{
+        if(!checkQuantity()){
+            return false;
+        }
+        return true;
+    }
+    const onClickBtn = ()=>{
+        if(!checkForm()){
+            confirm({ 
+                title:"Precaución!",
+                description: `¿Estas seguro que deseas agregar ${quantity} a '${worker.names}'?`,
+                confirmationText:"Si",
+                cancellationText:"No"
+            }).then(() => {
+                toast.promise(
+                    addPackages({
+                        userID:worker.ID,
+                        packages:quantity
+                    }),
+                    {
+                        loading: `agregando ${quantity} paquetes a: '${worker.names}'`,
+                        success: <b>Paquetes agregados con éxito!</b>,
+                        error: <b>Error al agregar los paquetes.</b>,
+                    }
+                );
+            })
+            .catch(() => {
+                
+            });
+        }else{
+            toast.error("La cantidad debe ser un número entero.");
+        }
+    }
+    return(
+        <Grid container style={{paddingLeft:"10%",paddingRight:"10%",backgroundColor:COLORS.background}}>
+            <Grid item xs={12} md={3} style={{padding:10}}>
+                <FadeIn>
+                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary}}>
+                        <CardContent>
+                            <Typography style={{fontSize:20,textAlign:"left"}}>
+                                Desgloce de sueldo
+                            </Typography>
+                            <Grid container>
+                                <Grid item xs={6}>
+                                    <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
+                                        Sueldo base:
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
+                                        Bono por horas:
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
+                                        Bono por entregas:
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
+                                        Total:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {worker.salary.toFixed(2)}
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {worker.hour_bonus.toFixed(2)}
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {worker.package_bonus.toFixed(2)}
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {worker.full_salary.toFixed(2)}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </FadeIn>
+            </Grid>
+            <Grid item xs={12} md={3} style={{padding:10}}>
+                <FadeIn delay={300}>
+                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary}}>
+                        <CardContent>
+                            <Typography style={{fontSize:20,textAlign:"left"}}>
+                                Descuentos
+                            </Typography>
+                            <Grid container>
+                                <Grid item xs={6}>
+                                    <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
+                                        Porcentaje ISR:
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
+                                        Total ISR:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                         {worker.isr_porcent}%
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {worker.isr_total.toFixed(2)}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </FadeIn>
+            </Grid>
+            <Grid item xs={12} md={3} style={{padding:10}}>
+                <FadeIn delay={600}>
+                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary}}>
+                        <CardContent>
+                            <Typography style={{fontSize:20,textAlign:"left"}}>
+                                Totales
+                            </Typography>
+                            <Grid container>
+                                <Grid item xs={6}>
+                                    <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
+                                        Salario Completo:
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
+                                        Total descuentos:
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"left",color:COLORS.primary}}>
+                                        Total a pagar:
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {worker.full_salary.toFixed(2)}
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {worker.isr_total.toFixed(2)}
+                                    </Typography>
+                                    <Typography style={{fontSize:15,textAlign:"right",color:COLORS.secondary}}>
+                                        $ {worker.salary_total.toFixed(2)}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </FadeIn>
+            </Grid>
+            <Grid item xs={12} md={3} style={{padding:10}}>
+                <FadeIn delay={900}>
+                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary}}>
+                        <CardContent>
+                            <Typography style={{fontSize:20,textAlign:"left"}}>
+                                Agregar Paquetes
+                            </Typography>
+                            <Grid container>
+                                <Grid item>
+                                    <Input 
+                                        value={quantity}
+                                        setValue={setQuantity}
+                                        placeholder="Número de paquetes"
+                                        style={{
+                                            marginLeft:10
+                                        }}
+                                    />
+                                </Grid>
+                                <Grid item>
+                                    <CustomButton 
+                                        type="success"
+                                        execute={onClickBtn}
+                                        load={loadPackage}
+                                        style={{
+                                            marginLeft:15
+                                        }}
+                                    >
+                                        Agregar
+                                    </CustomButton>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </FadeIn>
+            </Grid>
+        </Grid>
     )
 }
 export default Table;

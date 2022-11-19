@@ -62,7 +62,14 @@ const ModalCreate = ()=>{
     const Create = ()=>{
         let errors = checkForm();
         if(!errors){
-            createWorker({names,first_sname,second_sname,userType});
+            toast.promise(
+                createWorker({names,first_sname,second_sname,userType}),
+                {
+                    loading: 'Creando Empleado...',
+                    success: <b>Empleado Creado!</b>,
+                    error: <b>Error al crear el empleado.</b>,
+                }
+            );
         }else{
             toast.error(errors[0]);
         }

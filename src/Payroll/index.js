@@ -1,9 +1,9 @@
 import React from "react";
-import Loader from "../Components/Loader";
 import { PayrollProvider } from "./store";
 import Model from "./model";
 import Grid from "@mui/material/Grid";
 import {Toaster} from "react-hot-toast";
+import { ConfirmProvider } from "material-ui-confirm";
 const Payroll = (props)=>{
     return(
         <PayrollProvider>
@@ -20,6 +20,4 @@ const Payroll = (props)=>{
     )
 }
 export default Payroll;
-const PayrollTunnel = (props)=>{
-    return <Model />;
-}
+const PayrollTunnel = (props)=><ConfirmProvider><Model /></ConfirmProvider>;
