@@ -1,6 +1,6 @@
 import axios from "axios";
 import Constants from "./Constants";
-const PostRequest = ({postData,url,load})=>{
+const PostRequest = ({postData,url,load,delay})=>{
     return new Promise((resolve,reject)=>{
         (async()=>{
             axios.defaults.baseURL = Constants.BACKEND;
@@ -15,17 +15,19 @@ const PostRequest = ({postData,url,load})=>{
             })
             if(r){
                 if(r.data){
-                    if(r.data.error){
-                        reject({
-                            error:r.data.error
-                        })
-                    }else{
-                        resolve(r.data);
-                    }
+                    setTimeout(()=>{
+                        if(r.data.error){
+                            reject({
+                                error:r.data.error
+                            })
+                        }else{
+                            resolve(r.data);
+                        }
+                    },delay||1000);
                 }
             }
             if(load){
-                load(false);
+                setTimeout(()=>load(false),delay||1000);
             }
         })()
     })

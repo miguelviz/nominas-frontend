@@ -8,7 +8,8 @@
     margin-top: 20px;
 }
 .custom-th{
-    min-width: 20%;
+    min-width: 15%;
+    max-width:20%;
 }
 .custom-tr{
     width:100%;

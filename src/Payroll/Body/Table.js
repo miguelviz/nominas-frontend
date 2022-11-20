@@ -48,7 +48,7 @@ const Table = ()=>{
                     !filteredList() ?
                     <tr>
                         <td colSpan={5} align="center">
-                            Sin resultados.
+                            Obteniendo listado de empleados..
                         </td>
                     </tr> :
                     filteredList().map((worker,indexWorker)=>(
@@ -140,7 +140,8 @@ const WorkerSalaryDetails = ({worker})=>{
                 toast.promise(
                     addPackages({
                         userID:worker.ID,
-                        packages:quantity
+                        packages:quantity,
+                        callback:()=>setQuantity("")
                     }),
                     {
                         loading: `agregando ${quantity} paquetes a: '${worker.names}'`,
@@ -283,23 +284,23 @@ const WorkerSalaryDetails = ({worker})=>{
                                 Agregar Paquetes
                             </Typography>
                             <Grid container>
-                                <Grid item>
+                                <Grid item xs={8}>
                                     <Input 
                                         value={quantity}
                                         setValue={setQuantity}
                                         placeholder="Número de paquetes"
                                         style={{
-                                            marginLeft:10
+                                            minWidth:"100%"
                                         }}
                                     />
                                 </Grid>
-                                <Grid item>
+                                <Grid item xs={4} style={{display:"flex",justifyContent:"flex-end"}}>
                                     <CustomButton 
                                         type="success"
                                         execute={onClickBtn}
                                         load={loadPackage}
                                         style={{
-                                            marginLeft:15
+                                            width:"90%"
                                         }}
                                     >
                                         Agregar

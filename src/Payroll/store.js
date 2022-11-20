@@ -62,7 +62,7 @@ export const PayrollProvider = (props)=>{
             })()
         })
     }
-    const addPackages = async({userID,packages})=>{
+    const addPackages = async({userID,packages,callback})=>{
         return new Promise((resolve,reject)=>{
             (async()=>{
                 let r = await PostRequest({
@@ -79,6 +79,9 @@ export const PayrollProvider = (props)=>{
                 if(r){
                     await refreshPageData();
                     resolve();
+                    if(callback){
+                        callback();
+                    }
                 }
             })()
         })
