@@ -11,7 +11,7 @@ const CustomButton = ({type,execute,load,children,style,disabled})=>{
         ...style
     }
     return(
-        <Button style={btnStyles} onClick={execute||noExe} disabled={load||disabled}>
+        <Button className="sizeable" style={btnStyles} onClick={execute||noExe} disabled={load||disabled}>
             {load?"Espere..":children||"Etiqueta no definida."}
         </Button>
     )

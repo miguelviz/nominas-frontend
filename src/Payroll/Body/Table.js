@@ -96,7 +96,7 @@ const CustomTr = ({worker,index})=>{
                 </td>
                 <td onClick={handleShowMoney} style={{cursor:"pointer"}} align="center">
                     {
-                        !showMoney ? <ArrowCircleDownIcon style={{color:COLORS.primary,fontSize:50}} /> : <ArrowCircleUpIcon style={{color:COLORS.secondary,fontSize:50}} />
+                        !showMoney ? <ArrowCircleDownIcon className="sizeable" style={{color:COLORS.primary,fontSize:50}} /> : <ArrowCircleUpIcon className="sizeable" style={{color:COLORS.secondary,fontSize:50}} />
                     }
                 </td>
             </tr>
@@ -160,7 +160,7 @@ const WorkerSalaryDetails = ({worker})=>{
         <Grid container style={{paddingLeft:"3%",paddingRight:"3%",backgroundColor:COLORS.background}}>
             <Grid item xs={12} md={3} style={{padding:10}}>
                 <FadeIn>
-                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary}}>
+                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary,boxShadow:`3px 4px ${COLORS.primary}`}}>
                         <CardContent>
                             <Typography style={{fontSize:20,textAlign:"left"}}>
                                 Desgloce de sueldo
@@ -213,7 +213,7 @@ const WorkerSalaryDetails = ({worker})=>{
             </Grid>
             <Grid item xs={12} md={3} style={{padding:10}}>
                 <FadeIn delay={300}>
-                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary}}>
+                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary,boxShadow:`3px 4px ${COLORS.primary}`}}>
                         <CardContent>
                             <Typography style={{fontSize:20,textAlign:"left"}}>
                                 Descuentos
@@ -242,7 +242,7 @@ const WorkerSalaryDetails = ({worker})=>{
             </Grid>
             <Grid item xs={12} md={3} style={{padding:10}}>
                 <FadeIn delay={600}>
-                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary}}>
+                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary,boxShadow:`3px 4px ${COLORS.primary}`}}>
                         <CardContent>
                             <Typography style={{fontSize:20,textAlign:"left"}}>
                                 Totales
@@ -277,7 +277,7 @@ const WorkerSalaryDetails = ({worker})=>{
             </Grid>
             <Grid item xs={12} md={3} style={{padding:10}}>
                 <FadeIn delay={900}>
-                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary}}>
+                    <Card sx={{minWidth:"100%",borderColor:COLORS.primary,boxShadow:`3px 4px ${COLORS.primary}`}}>
                         <CardContent>
                             <Typography style={{fontSize:20,textAlign:"left"}}>
                                 Agregar Paquetes

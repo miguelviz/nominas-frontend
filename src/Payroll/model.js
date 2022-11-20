@@ -85,6 +85,7 @@ const ModalCreate = ()=>{
         }
     }
     const Cancel = ()=>{
+        setWorkNumber("");
         setNames("");
         setFirst_sname("");
         setSecond_sname("");
