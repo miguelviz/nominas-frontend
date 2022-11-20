@@ -28,6 +28,7 @@ const ModalCreate = ()=>{
     const [first_sname,setFirst_sname] = React.useState("");
     const [second_sname,setSecond_sname] = React.useState("");
     const [userType,setUserType] = React.useState(0);
+    const [workNumber,setWorkNumber] = React.useState("");
 
     const checkForm = ()=>{
         let errors = [];
@@ -45,6 +46,13 @@ const ModalCreate = ()=>{
         }
         if(!userType){
             errors.push("Seleccione un tipo de usuario.")
+        }
+        if(workNumber){
+            if(isNaN(workNumber)){
+                errors.push("Formato de número de empleado inválido")
+            }
+        }else{
+            errors.push("Debe especificar número de empleado.")
         }
         if(errors.length===0){
             return null;
@@ -65,7 +73,7 @@ const ModalCreate = ()=>{
         let errors = checkForm();
         if(!errors){
             toast.promise(
-                createWorker({names,first_sname,second_sname,userType}),
+                createWorker({names,first_sname,second_sname,userType,workNumber}),
                 {
                     loading: 'Creando Empleado...',
                     success: <b>Empleado Creado!</b>,
@@ -96,6 +104,14 @@ const ModalCreate = ()=>{
                     <Typography style={{textAlign:"right",fontSize:20}}>
                         Crear Empleado
                     </Typography>
+                </Grid>
+                <Grid item xs={12} style={{padding:5}}>
+                    <Input 
+                        value={workNumber}
+                        setValue={setWorkNumber}
+                        style={{width:"100%"}}
+                        placeholder="Número de empleado"
+                    />
                 </Grid>
                 <Grid item xs={12} style={{padding:5}}>
                     <Input 

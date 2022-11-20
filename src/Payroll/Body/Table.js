@@ -69,7 +69,7 @@ const CustomTr = ({worker,index})=>{
                 <td align="center">
                     <FadeIn delay={index*100}>
                         <Typography style={{color:COLORS.secondary}}>
-                            {worker.names} {worker.first_sname} {worker.second_sname}
+                            {worker.names} {worker.first_sname} {worker.second_sname} ({worker.work_number})
                         </Typography>
                     </FadeIn>
                 </td>

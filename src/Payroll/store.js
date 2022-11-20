@@ -37,7 +37,7 @@ export const PayrollProvider = (props)=>{
             setPageData(r.result);
         }
     }
-    const createWorker = async({names,first_sname,second_sname,userType})=>{
+    const createWorker = async({names,first_sname,second_sname,userType,workNumber})=>{
         return new Promise((resolve,reject)=>{
             (async()=>{
                 let r = await PostRequest({
@@ -46,7 +46,8 @@ export const PayrollProvider = (props)=>{
                         names,
                         first_sname,
                         second_sname,
-                        userType
+                        userType,
+                        workNumber
                     },
                     load:handleLoadCreate
                 }).catch(e=>{
