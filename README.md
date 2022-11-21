@@ -1,3 +1,37 @@
+# NodeJS FRONTEND README.
+Installation:
+    1.-Clone the proyect
+    2.-Install dependencies (yarn install)
+    3.-start the proyect (yarn start)
+Building:
+    1.-Start a build (yarn build)
+    2.-Remplace "In Backend" ./build folder 
+    3.-Generate git push or install in server
+Have fun.
+-----------------------------------------------------------------------------
+# Principal params: 
+    route: ./src/Utils/Constants.js
+    Constants:{
+        BACKEND: CHAR, -- URL backend
+        COLORS: OBJECT -- App colors
+    }
+-----------------------------------------------------------------------------
+# Project Structure:
+    App:{
+        Payroll:{
+            Header,
+            Body,
+            Footer
+        }
+    }
+    route: ./src/Payroll
+    program_type: [async-await] - React Hooks - React-Context.
+    important_libraries: @mui - React
+-----------------------------------------------------------------------------
+
+
+# React DOCS
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
