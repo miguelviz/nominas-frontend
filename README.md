@@ -1,21 +1,19 @@
-# NodeJS FRONTEND README.
-Installation:
+
+# Installation:
     1.-Clone the proyect
     2.-Install dependencies (yarn install)
     3.-start the proyect (yarn start)
-Building:
+# Building:
     1.-Start a build (yarn build)
     2.-Remplace "In Backend" ./build folder 
     3.-Generate git push or install in server
-Have fun.
------------------------------------------------------------------------------
+    4.-Have fun.
 # Principal params: 
     route: ./src/Utils/Constants.js
     Constants:{
         BACKEND: CHAR, -- URL backend
         COLORS: OBJECT -- App colors
     }
------------------------------------------------------------------------------
 # Project Structure:
     App:{
         Payroll:{
@@ -27,7 +25,6 @@ Have fun.
     route: ./src/Payroll
     program_type: [async-await] - React Hooks - React-Context.
     important_libraries: @mui - React
------------------------------------------------------------------------------
 
 
 # React DOCS
